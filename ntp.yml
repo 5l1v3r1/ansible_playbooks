@@ -1,0 +1,63 @@
+---
+- hosts: all
+  vars:
+    ntp1: 192.168.1.2
+    ntp2: 192.168.1.3
+  environment:
+    http_proxy: "http://192.168.1.1:3128"
+  #remote_user: root
+  become: yes
+  become_method: su
+  #ask_become_pass: yes
+  tasks:
+  - name: ensure ntp is at the latest version
+    package:
+      state: latest
+      name: "{{item}}"
+    with_items:
+      - ntp
+      - tzdata
+  - name: Ensure timezone is set to America/Montevideo
+    timezone:
+      name: America/Montevideo
+  - name: write the ntp config file
+    template:
+      src: ./ntp.conf.j2
+      dest: /etc/ntp.conf
+      backup: true
+    notify:
+    - restart ntp
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  - name: write the ntpd config file
+    template:
+      src: ./ntp.conf.j2
+      dest: /etc/ntp.conf
+      backup: true
+    notify:
+    - restart ntpd
+    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Redhat'
+  - name: ensure ntp is running
+    service:
+      name: ntp
+      state: started
+      enabled: true
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  - name: ensure ntpd is running
+    service:
+      name: ntpd
+      state: started
+      enabled: true
+    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Redhat'
+  handlers:
+    - name: restart ntp
+      service:
+        name: ntp
+        state: restarted
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+    - name: restart ntpd
+      service:
+        name: ntpd
+        state: restarted
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Redhat'
+
+

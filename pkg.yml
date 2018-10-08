@@ -1,0 +1,59 @@
+---
+- hosts: all
+  #remote_user: root
+  vars:
+    http_proxy: "http://192.168.1.1:3128"
+  become: yes
+  become_method: su
+  #ask_become_pass: yes
+  tasks:
+  - name: add signing keys
+    apt_key: id={{item}} keyserver=keyserver.ubuntu.com
+    with_items:
+      - 8B48AD6246925553
+      - 04EE7237B7D453EC
+  - name: clean apt cache
+    apt:
+      autoclean: yes
+  - name: Ensure some packages are installed
+    #package: name={{item}} state=latest
+    apt: 
+      name: "{{item}}"
+      state: latest 
+      update_cache: true
+    environment:
+      http_proxy: "{{http_proxy}}"
+    with_items:
+      - dpkg
+      - apt
+      - bzip2
+  - name: Ensure some Adm packages are installed
+    apt: 
+      name: "{{item}}" 
+      state: latest 
+      update_cache: true
+    environment:
+      http_proxy: "{{http_proxy}}"
+    with_items:
+      - htop
+      - vim
+      - screen
+      - rsync
+      - ssh
+      - rdiff-backup
+      - ifstat
+      - strace
+      - wget
+      - curl
+  - name: Ensure some other packages are installed
+    apt:
+      name: "{{item}}"
+      state: latest
+      update_cache: true
+    environment:
+      http_proxy: "{{http_proxy}}"
+    with_items:
+      - btrfs-tools
+      - btrfs-progs
+      - duperemove
+      - rkhunter
