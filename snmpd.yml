@@ -1,0 +1,61 @@
+---
+- hosts: all
+  vars:
+    ipaddr: 0.0.0.0
+    includeView: "view   systemonly  included   .1.3.6.1.4.1.2021\nview   systemonly  included   .1.3.6.1.2.1.25"
+    roExtra: "rocommunity roc1  default    -V systemonly\nrocommunity roc2 192.168.1.0/24" 
+  environment:
+    http_proxy: "http://192.168.1.1:3128"
+    PATH: "/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/usr/local/sbin:/usr/sbin:/sbin"
+  #remote_user: root
+  become: yes
+  become_method: su
+  #ask_become_pass: yes
+  tasks:
+  - name: ensure snmpd is at the latest version
+    package:
+      state: latest
+      name: "{{item}}"
+    with_items:
+      - snmpd
+  - name: write the snmpd config file
+    template:
+      src: ./snmpd.conf.j2
+      dest: /etc/snmp/snmpd.conf
+      backup: true
+    notify:
+    - restart snmpd
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  - name: write the snmpd config file
+    template:
+      src: ./snmpd.conf.j2
+      dest: /etc/snmp/snmpd.conf
+      backup: true
+    notify:
+    - restart snmpd
+    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Redhat'
+  - name: ensure snmpd is running
+    service:
+      name: snmpd
+      state: started
+      enabled: true
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  - name: ensure snmpd is running
+    service:
+      name: snmpd
+      state: started
+      enabled: true
+    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Redhat'
+  handlers:
+    - name: restart snmpd
+      service:
+        name: snmpd
+        state: restarted
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+    - name: restart snmpd
+      service:
+        name: snmpd
+        state: restarted
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Redhat'
+
+
