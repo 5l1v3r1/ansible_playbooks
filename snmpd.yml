@@ -2,8 +2,12 @@
 - hosts: all
   vars:
     ipaddr: 0.0.0.0
-    includeView: "view   systemonly  included   .1.3.6.1.4.1.2021\nview   systemonly  included   .1.3.6.1.2.1.25"
-    roExtra: "rocommunity roc1  default    -V systemonly\nrocommunity roc2 192.168.1.0/24" 
+    includeViews: 
+      - "view   systemonly  included   .1.3.6.1.4.1.2021"
+      - "view   systemonly  included   .1.3.6.1.2.1.25"
+    roExtras: 
+      - "rocommunity roc1  default    -V systemonly"
+      - "rocommunity roc2 192.168.1.0/24" 
   environment:
     http_proxy: "http://192.168.1.1:3128"
     PATH: "/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/usr/local/sbin:/usr/sbin:/sbin"
