@@ -46,7 +46,7 @@ view   systemonly  included   .1.3.6.1.2.1.1
 view   systemonly  included   .1.3.6.1.2.1.25.1
 
 {% for includeView in includeViews %}
-includeView
+{{includeView}}
 {% endfor %}
                                                  #  Full access from the local host
 #rocommunity public  localhost
@@ -54,7 +54,7 @@ includeView
 rocommunity public  default    -V systemonly
 
 {% for roExtra in roExtras %}
-roExtra
+{{roExtra}}
 {% endfor %}
                                                  #  Full access from an example network
                                                  #     Adjust this network address to match your local
