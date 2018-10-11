@@ -44,12 +44,18 @@ agentAddress  udp:{{ipaddr}}:161
                                                  #  system + hrSystem groups only
 view   systemonly  included   .1.3.6.1.2.1.1
 view   systemonly  included   .1.3.6.1.2.1.25.1
-{{includeView}}
+
+{% for includeView in includeViews %}
+includeView
+{% endfor %}
                                                  #  Full access from the local host
 #rocommunity public  localhost
                                                  #  Default access to basic system info
 rocommunity public  default    -V systemonly
-{{roExtra}}
+
+{% for roExtra in roExtras %}
+roExtra
+{% endfor %}
                                                  #  Full access from an example network
                                                  #     Adjust this network address to match your local
                                                  #     settings, change the community string,
