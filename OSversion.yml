@@ -3,9 +3,6 @@
   vars:
     dest: distro.csv
   tasks:
-    - name: Get kernel version
-      shell: uname -r
-      register: kversion
     - copy:
         content: ''
         dest: "{{ dest }}"
@@ -13,5 +10,5 @@
       delegate_to: 127.0.0.1
     - lineinfile:
         dest: "{{ dest }}"
-        line: '{{ inventory_hostname }},{{ ansible_distribution }},{{ ansible_distribution_major_version }},{{ ansible_distribution_version }},{{ ansible_distribution_release }},{{ kversion.stdout }}'
+        line: '{{ inventory_hostname }},{{ ansible_lsb.description }},{{ ansible_kernel }}'
       delegate_to: 127.0.0.1
