@@ -10,5 +10,5 @@
       delegate_to: 127.0.0.1
     - lineinfile:
         dest: "{{ dest }}"
-        line: '{{ inventory_hostname }},{{ ansible_lsb.description }},{{ ansible_kernel }}'
+        line: '{{ inventory_hostname }},{{ ansible_lsb.description }},{{ ansible_kernel }}, {{ ansible_processor_vcpus }} ,{{ ansible_memtotal_mb }}'
       delegate_to: 127.0.0.1
