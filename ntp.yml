@@ -1,8 +1,7 @@
 ---
 - hosts: all
-  vars:
-    - 192.168.1.2
-    - 192.168.1.3
+  vars_files:
+    - ntp.aes256.yml
   environment:
     http_proxy: "http://192.168.1.1:3128"
   #remote_user: root
