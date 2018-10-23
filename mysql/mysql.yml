@@ -22,7 +22,7 @@
      template:
        src: ./mysql_secure.sql.j2
        dest: /tmp/mysql_secure.sql
-     shell: mysql < /tmp/mysql_secure.sql
+     shell: "mysql < /tmp/mysql_secure.sql"
    - name: Restart mysql
      service:
        name: mysql
