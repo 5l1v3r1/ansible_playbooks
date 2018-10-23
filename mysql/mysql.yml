@@ -1,0 +1,32 @@
+---
+- hosts: db
+  vars:
+    bind_address: 0.0.0.0
+  vars_files:
+    - pw.yml 
+  tasks:
+   - name: Ensure mysql is installed
+     package:
+       state: latest
+       name: mysql-server
+     notify:
+      - restart mysql
+   - name: Ensure mysql is configured
+     templace:
+       src: ./50-server.cnf.j2
+       dest: /etc/mysql/mysql.conf.d/50-server.cnf
+       backup: true
+     notify:
+      - restart mysql
+   - name: Ensure mysql installation is secure
+     template:
+       src: ./mysql_secure.sql.j2
+       dest: /tmp/mysql_secure.sql
+     shell: mysql < /tmp/mysql_secure.sql
+   - name: Restart mysql
+     service:
+       name: mysql
+       state: restarted
+   - name: Cleanup
+     shell: "rm /tmp/mysql_secure.sql"
+       
