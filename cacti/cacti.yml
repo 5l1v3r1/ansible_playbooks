@@ -1,0 +1,25 @@
+---
+- hosts: db
+  vars_files:
+    - pw_enc.yml 
+  tasks:
+  #- name: "Debconf cacti"
+  - apt: name=debconf-utils state=present
+  - debconf: name='cacti' question='cacti/debconfig-install' value='true', vtype='boolean'
+  - debconf: name='cacti' question='cacti/webserver' value='apache2', vtype='string'
+  - debconf: name='cacti' question='cacti/admin-user' value='admin', vtype='string'
+  - apt: name=cacti state=present  
+  - name: "Ensure cacti pw is set"
+    template:
+      src: "./cacti.sql.j2"
+      dest: "/tmp/cacti.sql"
+  - name: "Execute sql"
+    shell: "mysql < /tmp/cacti.sql"
+  - name: cleanup
+    file:
+      state: absent
+      path: "/tmp/cacti.sql"  
+  - name: Restart cacti
+    service: 
+      name: apache2
+      state: restarted

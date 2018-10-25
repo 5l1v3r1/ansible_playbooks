@@ -1,0 +1,2 @@
+use cacti;
+update user_auth set password=md5('{{ cacti_admin_pw }}') where username='admin';
