@@ -3,7 +3,6 @@
   vars_files:
     - pw_enc.yml 
   tasks:
-  #- name: "Debconf cacti"
   - apt: name=debconf-utils state=present
   - debconf: name='cacti' question='cacti/debconfig-install' value='true', vtype='boolean'
   - debconf: name='cacti' question='cacti/webserver' value='apache2', vtype='string'
